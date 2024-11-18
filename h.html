@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Now | NewGen Store</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        header {
+            background-color: #28a745; /* Updated color for a fresh look */
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header .nav {
+            display: flex;
+            gap: 15px;
+        }
+        header .nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        header .cart-icon {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        header .cart-icon img {
+            width: 24px;
+            height: 24px;
+            margin-right: 5px;
+        }
+        main {
+            margin: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .product-card {
+            flex: 1 1 calc(25% - 20px);
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .product-card img {
+            max-width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .cart-sidebar {
+            width: 300px;
+            background-color: #fff;
+            border-left: 1px solid #ddd;
+            height: 100vh;
+            overflow-y: auto;
+            position: fixed;
+            right: 0;
+            top: 0;
+            padding: 20px;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 9999;
+        }
+        .cart-sidebar h3 {
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 20px;
+            color: #333;
+        }
+        .cart-sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .cart-sidebar li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+        }
+        .close-cart {
+            font-size: 20px;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #000;
+        }
+        button {
+            padding: 8px 12px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .action-buttons button:nth-child(1) {
+            font-size: 16px;
+            width: 45%;
+            background-color: #28a745; /* Green for Add to Cart */
+        }
+        .action-buttons button:nth-child(2) {
+            font-size: 14px;
+            width: 45%;
+            background-color: #dc3545; /* Red for Buy Now */
+        }
+        .action-buttons button:nth-child(1):hover {
+            background-color: #218838;
+        }
+        .action-buttons button:nth-child(2):hover {
+            background-color: #c82333;
+        }
+        .cart-summary {
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 id="header-title">NewGen Store</h1>
+        <div class="nav">
+            <span id="view-cart" class="cart-icon">
+                <img src="https://via.placeholder.com/24x24?text=Cart" alt="Cart Icon">
+                Cart (<span id="cart-count">0</span>)
+            </span>
+            <select id="language-selector">
+                <option value="en" selected>English</option>
+                <option value="hi">Hindi</option>
+                <option value="ta">Tamil</option>
+                <option value="bn">Bengali</option>
+                <option value="mr">Marathi</option>
+                <option value="gu">Gujarati</option>
+                <option value="kn">Kannada</option>
+                <option value="ml">Malayalam</option>
+                <option value="pa">Punjabi</option>
+                <option value="te">Telugu</option>
+                <option value="ur">Urdu</option>
+            </select>
+        </div>
+    </header>
+
+    <main id="product-list">
+        <!-- Products will be dynamically added here -->
+    </main>
+
+    <aside class="cart-sidebar" id="cart-sidebar">
+        <span class="close-cart" id="close-cart">×</span>
+        <h3 id="cart-header">Your Cart</h3>
+        <ul id="cart-list">
+            <li>Your cart is empty.</li>
+        </ul>
+    </aside>
+
+    <script>
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Update Cart Count
+        function updateCartCount() {
+            document.getElementById('cart-count').innerText = cart.length;
+        }
+
+        // Add to Cart Function
+        function addToCart(product) {
+            cart.push(product);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert(`${product.title} has been added to your cart.`);
+            updateCartCount();
+            updateCartSidebar();
+        }
+
+        // Buy Now Function (Simulating the purchase action)
+        function buyNow(product) {
+            alert(`You are about to purchase ${product.title} for ${product.price}.`);
+        }
+
+        // Update Cart Sidebar
+        function updateCartSidebar() {
+            const cartList = document.getElementById('cart-list');
+            cartList.innerHTML = '';
+
+            if (cart.length === 0) {
+                cartList.innerHTML = '<li>Your cart is empty.</li>';
+                return;
+            }
+
+            cart.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <div style="flex: 1;">
+                        <img src="${item.image}" alt="${item.title}" style="width: 60px; height: 60px; object-fit: cover; margin-right: 10px;">
+                        <strong>${item.title}</strong><br>
+                        ${item.price}
+                    </div>
+                    <div class="action-buttons">
+                        <button onclick="buyNow(${JSON.stringify(item).replace(/"/g, "&quot;")})" style="font-size: 16px; width: 90%;">Buy Now</button>
+                        <button onclick="removeFromCart(${index})" style="font-size: 14px; width: 90%;">Remove</button>
+                    </div>
+                `;
+                cartList.appendChild(li);
+            });
+        }
+
+        // Remove Item from Cart
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            updateCartSidebar();
+        }
+
+        // Show/Hide Cart Sidebar
+        document.getElementById('view-cart').addEventListener('click', () => {
+            document.getElementById('cart-sidebar').style.display = 'block';
+        });
+
+        document.getElementById('close-cart').addEventListener('click', () => {
+            document.getElementById('cart-sidebar').style.display = 'none';
+        });
+
+        // Generate Products
+        function generateProducts() {
+            const productList = document.getElementById('product-list');
+            for (let i = 1; i <= 12; i++) {
+                const product = {
+                    id: `product${i}`,
+                    title: `Product ${i}`,
+                    description: `This is the description of Product ${i}.`,
+                    price: i === 1 ? "₹250" : (i === 2 ? "₹260" : (i === 3 ? "₹1000" : `$${(Math.random() * 50 + 10).toFixed(2)}`)),
+                    image: `images/product${i}.jpg`  // Example: images/product1.jpg, images/product2.jpg, etc.
+                };
+
+                const productCard = document.createElement('div');
+                productCard.classList.add('product-card');
+                productCard.innerHTML = `
+                    <img src="${product.image}" alt="${product.title}">
+                    <h3>${product.title}</h3>
+                    <p>${product.description}</p>
+                    <div class="action-buttons">
+                        <button onclick="addToCart(${JSON.stringify(product).replace(/"/g, "&quot;")})">Add to Cart</button>
+                        <button onclick="buyNow(${JSON.stringify(product).replace(/"/g, "&quot;")})" style="background-color: #dc3545;">Buy Now</button>
+                    </div>
+                `;
+                productList.appendChild(productCard);
+            }
+        }
+
+        // Initial Setup
+        updateCartCount();
+        generateProducts();
+    </script>
+</body>
+</html>
